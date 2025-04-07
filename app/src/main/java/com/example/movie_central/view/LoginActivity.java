@@ -15,11 +15,26 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.movie_central.R;
 import com.example.movie_central.databinding.ActivityMainBinding;
 import com.example.movie_central.databinding.LoginBinding;
+import com.example.movie_central.viewmodel.AuthCallBack;
 import com.example.movie_central.viewmodel.MovieViewModel;
 
 public class LoginActivity extends AppCompatActivity {
     MovieViewModel viewModel;
     LoginBinding binding;
+
+    private final AuthCallBack loginCallback = new AuthCallBack() {
+        @Override
+        public void onResult(boolean success, String message) {
+            if (success) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                binding.lblWarning1.setText("Login failed: " + message);
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +62,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Code for when the login button is clicked
+                String email = binding.username.getText().toString().trim();
+                String password = binding.password.getText().toString().trim();
 
+                viewModel.logUserIn(email, password, loginCallback);
             }
         });
 
     }
+
 }
+
+

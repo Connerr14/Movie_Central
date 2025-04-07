@@ -1,5 +1,6 @@
 package com.example.movie_central.viewmodel;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,8 +12,15 @@ import androidx.lifecycle.ViewModel;
 import com.example.movie_central.model.Movie;
 import com.example.movie_central.model.User;
 import com.example.movie_central.utils.APIClient;
+import com.example.movie_central.view.LoginActivity;
+import com.example.movie_central.view.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -34,6 +42,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class MovieViewModel extends ViewModel {
+    private FirebaseAuth mAuth;
+
     List<Movie> movies = new ArrayList<>();
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -161,14 +171,23 @@ public class MovieViewModel extends ViewModel {
     }
 
     // A method to add a user to the DB (favMovies needs to be initialized with null)
-    public void addUser (String username, String password, String[] favMovies) {
-        User user = new User(username, password, favMovies);
-        collectionReference.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Log.d("MainActivity", "Added user");
-            }
-        });
+    public void addUser(String email, String password, String[] favMovies, AuthCallBack callback) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        User user = new User(email, null, favMovies);
+
+                        db.collection("users").document(userId).set(user)
+                                .addOnSuccessListener(aVoid -> callback.onResult(true, null))
+                                .addOnFailureListener(e -> callback.onResult(false, e.getMessage()));
+                    } else {
+                        callback.onResult(false, task.getException().getMessage());
+                    }
+                });
     }
 
     // A method to get the users details from the db
@@ -208,6 +227,20 @@ public class MovieViewModel extends ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Movie removed from favorites"))
                 .addOnFailureListener(e -> Log.e("MainActivity", "Failed to remove movie", e));
     }
+
+    public void logUserIn(String email, String password, AuthCallBack callback) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onResult(true, null);
+                    } else {
+                        callback.onResult(false, task.getException().getMessage());
+                    }
+                });
+    }
+
 
 }
 

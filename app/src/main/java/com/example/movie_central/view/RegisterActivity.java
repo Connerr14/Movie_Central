@@ -15,11 +15,25 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.movie_central.R;
 import com.example.movie_central.databinding.ActivityMainBinding;
 import com.example.movie_central.databinding.RegisterBinding;
+import com.example.movie_central.viewmodel.AuthCallBack;
 import com.example.movie_central.viewmodel.MovieViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
     MovieViewModel viewModel;
     RegisterBinding binding;
+
+    private final AuthCallBack registerCallback = new AuthCallBack() {
+        @Override
+        public void onResult(boolean success, String message) {
+            if (success) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                binding.lblWarning.setText("Registration failed: " + message);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,24 +48,10 @@ public class RegisterActivity extends AppCompatActivity {
         binding.registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Get text input from the text edit buttons
-                String username = binding.username.getText().toString().trim();
+                String email = binding.username.getText().toString().trim();
                 String password = binding.password.getText().toString().trim();
 
-
-                if (username.isEmpty() || password.isEmpty()) {
-                    binding.lblWarning.setText("Please fill out all fields");
-                }
-                else {
-                    binding.lblWarning.setText(""); // clear old message
-                    viewModel.addUser(username, password, null);
-
-                    // Direct the user to the login page
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-
-                }
+                viewModel.addUser(email, password, null, registerCallback);
             }
         });
 

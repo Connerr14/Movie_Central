@@ -45,4 +45,13 @@
         android:layout_gravity="center_horizontal">
     </Button>
 
+    <TextView
+        android:id="@+id/lblWarning1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp">
+    </TextView>
 </LinearLayout>
