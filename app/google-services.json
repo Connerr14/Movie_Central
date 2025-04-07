@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023900634904",
+    "project_id": "movie-central-cb418",
+    "storage_bucket": "movie-central-cb418.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023900634904:android:7c7fa67ab63d8d1caad86d",
+        "android_client_info": {
+          "package_name": "com.example.movie_central"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCch4QwpOKb0Xsk2ndQhnNUTGycMTqefxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

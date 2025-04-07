@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">movie_central</string>
+    <string name="search_movies">search_movies</string>
+    <string name="search">search</string>
+    <string name="movie_central">Movie Central</string>
+    <string name="movie_title">Movie Title</string>
+    <string name="year">Year</string>
+    <string name="rating">Rating</string>
+    <string name="studio">Studio</string>
+    <string name="type">Type</string>
+    <string name="title">Title</string>
+    <string name="poster_url">Poster URL</string>
+    <string name="year1">Year</string>
+    <string name="movie_poster">movie_poster</string>
+    <string name="back">Back</string>
+    <string name="imdb_rating_8_1_10">IMDb Rating: 8.1/10</string>
+    <string name="plot_when_a_massive_killer_shark_unleashes_chaos">Plot: When a massive killer shark unleashes chaos...</string>
+    <string name="director_steven_spielberg">Director: Steven Spielberg</string>
+    <string name="genre_adventure_drama_horror">Genre: Adventure, Drama, Horror</string>
+    <string name="year_1975">Year: 1975</string>
+    <string name="movie_title1">Movie Title</string>
+    <string name="rating1">rating</string>
+    <string name="search1">Search</string>
+    <string name="ex_jaws">Ex. Jaws</string>
+    <string name="movie_central1">Movie Central</string>
+    <string name="favorites">Favorites</string>
+    <string name="Search">Search</string>
+    <string name="login">Login</string>
+    <string name="loginBtn">Login</string>
+    <string name="register">Register</string>
+    <string name="Register">Register</string>
+    <string name="loginHeader">Login</string>
+    <string name="username1">Username</string>
+    <string name="password1">Password</string>
+    <string name="login1">Login</string>
+    <string name="password2">Password</string>
+</resources>
