@@ -6,16 +6,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.movie_central.R;
 import com.example.movie_central.databinding.ActivityMovieDetailsBinding;
 import com.example.movie_central.model.Movie;
+import com.example.movie_central.viewmodel.MovieViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +30,8 @@ import java.net.URL;
 public class OutputActivity extends AppCompatActivity {
     TextView movieTitle;
     Button backButton;
+
+    MovieViewModel viewModel;
 
     private ActivityMovieDetailsBinding binding;
 
@@ -36,6 +43,8 @@ public class OutputActivity extends AppCompatActivity {
         // Initialize View Binding
         binding = ActivityMovieDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        viewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
         // Retrieve the Movie object passed from MainActivity
         Movie movie = getIntent().getParcelableExtra("KEY_ONE", Movie.class);
@@ -60,6 +69,19 @@ public class OutputActivity extends AppCompatActivity {
                 }
             });
         }
+
+        // When add to fav is clicked
+        binding.addToFavBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String imdbID = movie.getImdbID();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null && movie != null) {
+                    viewModel.addFavoriteMovie(user.getUid(), imdbID);
+                }
+            }
+        });
     }
 
     private void loadMoviePoster(String posterUrl) {

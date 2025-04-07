@@ -87,14 +87,33 @@
             android:layout_marginBottom="16dp"
             android:scaleType="centerCrop" />
 
-
-        <!-- Back Button -->
-        <Button
-            android:id="@+id/btnBack1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/back"
-            android:layout_marginTop="16dp"
-            android:background="#45b6fe"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <!-- Back Button -->
+            <Button
+                android:id="@+id/btnBack1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#45b6fe"
+                android:text="Back"
+                />
+
+            <!-- Back Button -->
+            <Button
+                android:id="@+id/addToFavBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#45b6fe"
+                android:text="Add to Favorites"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+
     </LinearLayout>
 </ScrollView>

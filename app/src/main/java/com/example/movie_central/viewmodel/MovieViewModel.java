@@ -34,8 +34,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -209,14 +212,26 @@ public class MovieViewModel extends ViewModel {
         });
     }
 
-    // A method to add a favorite movie to a users account
+    // A method to add a favorite movie to a users account (Fix to not allow duplicates)
     public void addFavoriteMovie(String userId, String imdbID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference userRef = db.collection("users").document(userId);
+        DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(userId);
 
-        userRef.update("favMovies", FieldValue.arrayUnion(imdbID))
-                .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Movie added to favorites"))
-                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to add movie", e));
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+
+                userRef.update("favMovies", FieldValue.arrayUnion(imdbID))
+                        .addOnSuccessListener(aVoid -> Log.d("AddFav", "Movie added to favorites"))
+                        .addOnFailureListener(e -> Log.e("AddFav", "Failed to add movie", e));
+            } else {
+                Map<String, Object> newUser = new HashMap<>();
+                newUser.put("favMovies", Arrays.asList(imdbID));
+                newUser.put("username", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+                userRef.set(newUser)
+                        .addOnSuccessListener(aVoid -> Log.d("AddFav", "User doc created + movie added"))
+                        .addOnFailureListener(e -> Log.e("AddFav", "Failed to create user doc", e));
+            }
+        });
     }
 
     public void removeFavoriteMovie(String userId, String imdbID) {
