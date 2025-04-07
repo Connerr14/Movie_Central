@@ -1,5 +1,6 @@
 package com.example.movie_central.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,18 @@ public class LoginActivity extends AppCompatActivity {
         binding = LoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         viewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+
+
+        binding.registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Direct the user to the register page
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
 
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override

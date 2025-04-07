@@ -209,14 +209,6 @@ public class MovieViewModel extends ViewModel {
                 .addOnFailureListener(e -> Log.e("MainActivity", "Failed to remove movie", e));
     }
 
-
-
-
-
-
-
-
-
 }
 
 
