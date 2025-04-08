@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:clipToPadding="false"
+    android:layout_centerInParent="true"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <!-- Movie Title -->
+        <TextView
+            android:id="@+id/movieTitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/movie_title1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Movie Year -->
+        <TextView
+            android:id="@+id/movieYear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/year_1975"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Movie Genre -->
+        <TextView
+            android:id="@+id/movieGenre1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/genre_adventure_drama_horror"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Movie Director -->
+        <TextView
+            android:id="@+id/movieDirector1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/director_steven_spielberg"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Movie Plot -->
+        <TextView
+            android:id="@+id/moviePlot1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plot_when_a_massive_killer_shark_unleashes_chaos"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+
+        <!-- IMDb Rating -->
+        <TextView
+            android:id="@+id/rated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rating2"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Movie Description -->
+        <EditText
+            android:id="@+id/movieDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/movie_description"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Movie Poster Image -->
+        <ImageView
+            android:id="@+id/moviePoster1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/ic_launcher_background"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#45b6fe"
+                android:text="@string/delete"
+                android:layout_marginStart="8dp"/>
+
+            <!-- Back Button -->
+            <Button
+                android:id="@+id/btnBack1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#45b6fe"
+                android:text="@string/back1"
+                android:layout_marginStart="8dp"
+                />
+
+
+            <!-- Back Button -->
+            <Button
+                android:id="@+id/update"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#45b6fe"
+                android:text="@string/update"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

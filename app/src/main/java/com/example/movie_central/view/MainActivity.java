@@ -88,6 +88,15 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
             }
         });
 
+        binding.favoritesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go to the favorites page
+                Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @OptIn(markerClass = UnstableApi.class)

@@ -1,6 +1,5 @@
 package com.example.movie_central.viewmodel;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,15 +11,9 @@ import androidx.lifecycle.ViewModel;
 import com.example.movie_central.model.Movie;
 import com.example.movie_central.model.User;
 import com.example.movie_central.utils.APIClient;
-import com.example.movie_central.view.LoginActivity;
-import com.example.movie_central.view.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -34,8 +27,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +48,14 @@ public class MovieViewModel extends ViewModel {
     public LiveData<List<Movie>> getMovies() {
         return moviesLiveData;
     }
+
+
+// Setting up live data for the favMovies list
+    private final MutableLiveData<List<Movie>> favoriteMoviesLiveData = new MutableLiveData<>(new ArrayList<>());
+    public LiveData<List<Movie>> getFavoriteMoviesLiveData() {
+        return favoriteMoviesLiveData;
+    }
+
 
     public LiveData<Movie> getMovieDetails() {
         return movieDetailsLiveData; // Return LiveData for the movie details
@@ -218,13 +217,35 @@ public class MovieViewModel extends ViewModel {
 
         userRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
+                // Get the current fav movies
+                Map<String, Object> currentFavs = (Map<String, Object>) documentSnapshot.get("favMovies");
 
-                userRef.update("favMovies", FieldValue.arrayUnion(imdbID))
-                        .addOnSuccessListener(aVoid -> Log.d("AddFav", "Movie added to favorites"))
-                        .addOnFailureListener(e -> Log.e("AddFav", "Failed to add movie", e));
-            } else {
+                // Check if document does not have the fav already saved
+                if (currentFavs == null || !currentFavs.containsKey(imdbID))
+                {
+                    // If it doesnt, add it to the document
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("favMovies." + imdbID, ""); // Add with blank description
+                    userRef.update(update)
+                            .addOnSuccessListener(aVoid -> Log.d("AddFav", "Movie added with blank description"))
+                            .addOnFailureListener(e -> Log.e("AddFav", "Failed to add movie", e));
+                }
+                else
+                {
+                    Log.d("AddFav", "Movie already in favorites, skipping");
+                }
+
+
+            }
+            else
+            {
+                // New user doc with favMovies as a map
+                Map<String, Object> favMap = new HashMap<>();
+                // Add the imdbId that they chose to the map
+                favMap.put(imdbID, "");
+
                 Map<String, Object> newUser = new HashMap<>();
-                newUser.put("favMovies", Arrays.asList(imdbID));
+                newUser.put("favMovies", favMap);
                 newUser.put("username", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
                 userRef.set(newUser)
@@ -255,6 +276,101 @@ public class MovieViewModel extends ViewModel {
                     }
                 });
     }
+
+
+    // A function to get a users fav movies
+    public void loadFavoriteMovies(String userId) {
+        FirebaseFirestore.getInstance().collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    Map<String, String> favMap = (Map<String, String>) doc.get("favMovies");
+
+                    if (favMap == null || favMap.isEmpty()) {
+                        favoriteMoviesLiveData.postValue(new ArrayList<>());
+                        return;
+                    }
+
+                    List<Movie> movies = new ArrayList<>();
+
+                    for (String imdbID : favMap.keySet()) {
+                        String url = "https://www.omdbapi.com/?apikey=9070f20c&i=" + imdbID;
+                        APIClient.get(url, new Callback() {
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                if (response.body() != null) {
+                                    try {
+                                        JSONObject obj = new JSONObject(response.body().string());
+                                        Movie movie = new Movie(
+                                                obj.optString("Title"),
+                                                obj.optString("Year"),
+                                                obj.optString("imdbID"),
+                                                obj.optString("Type"),
+                                                obj.optString("imdbRating"),
+                                                obj.optString("Genre"),
+                                                obj.optString("Director"),
+                                                obj.optString("Plot"),
+                                                obj.optString("Poster"),
+                                                obj.optString("Writer"),
+                                                obj.optString("Rated")
+                                        );
+                                        synchronized (movies) {
+                                            movies.add(movie);
+                                            favoriteMoviesLiveData.postValue(new ArrayList<>(movies));
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                });
+    }
+
+    public void updateMovieDescription(String description, String imdbID) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference userRef = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId);
+
+        Map<String, Object> update = new HashMap<>();
+        update.put("favMovies." + imdbID, description); // dot notation updates map entry
+
+        userRef.update(update)
+                .addOnSuccessListener(aVoid -> Log.d("UpdateDesc", "Description updated"))
+                .addOnFailureListener(e -> Log.e("UpdateDesc", "Failed to update description", e));
+    }
+
+
+    public void getMovieDescription(String imdbID, OnSuccessListener<String> callback) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference userRef = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId);
+
+        userRef.get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                Map<String, Object> favMap = (Map<String, Object>) doc.get("favMovies");
+                if (favMap != null && favMap.containsKey(imdbID)) {
+                    String description = (String) favMap.get(imdbID);
+                    callback.onSuccess(description);
+                } else {
+                    callback.onSuccess(""); // fallback if no description
+                }
+            } else {
+                callback.onSuccess(""); // fallback if no user doc
+            }
+        });
+    }
+
+
 
 
 }
