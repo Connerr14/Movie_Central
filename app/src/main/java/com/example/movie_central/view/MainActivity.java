@@ -38,6 +38,13 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
+        boolean value = getIntent().getBooleanExtra("redirect", false);
+
+        if (value) {
+            Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+            startActivity(intent);
+        }
+
 
 
         // Set up view binding with MovieViewModel

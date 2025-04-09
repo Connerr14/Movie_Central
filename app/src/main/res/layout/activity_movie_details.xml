@@ -99,7 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="#45b6fe"
+                android:backgroundTint="@color/button_blue"
                 android:text="Back"
                 />
 
@@ -109,7 +109,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="#45b6fe"
+                android:backgroundTint="@color/button_blue"
                 android:text="Add to Favorites"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>

@@ -80,6 +80,7 @@ public class FavoriteMovieDetailsActivity extends AppCompatActivity {
                 Log.d("favoriteMovieDetailsActivity","In Delete" );
                 viewModel.removeFavoriteMovie(movie.getImdbID());
                 Intent intent = new Intent(FavoriteMovieDetailsActivity.this, MainActivity.class );
+                intent.putExtra("redirect", true);
                 startActivity(intent);
             }
         });
