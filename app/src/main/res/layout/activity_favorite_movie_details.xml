@@ -71,13 +71,28 @@
             android:layout_marginBottom="8dp" />
 
         <!-- Movie Description -->
-        <EditText
-            android:id="@+id/movieDescription"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/movie_description"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:baselineAligned="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description:"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText
+                android:id="@+id/movieDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/movie_description"
+                android:textSize="16sp"/>
+        </LinearLayout>
 
         <!-- Movie Poster Image -->
         <ImageView
