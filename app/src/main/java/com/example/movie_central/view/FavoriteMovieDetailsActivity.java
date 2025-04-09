@@ -1,21 +1,18 @@
 package com.example.movie_central.view;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.movie_central.R;
 import com.example.movie_central.databinding.ActivityFavoriteMovieDetailsBinding;
-import com.example.movie_central.databinding.ActivityFavoritesBinding;
 import com.example.movie_central.model.Movie;
 import com.example.movie_central.viewmodel.MovieViewModel;
 
@@ -24,7 +21,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class favoriteMovieDetailsActivity extends AppCompatActivity {
+public class FavoriteMovieDetailsActivity extends AppCompatActivity {
     ActivityFavoriteMovieDetailsBinding binding;
 
     MovieViewModel viewModel;
@@ -77,8 +74,15 @@ public class favoriteMovieDetailsActivity extends AppCompatActivity {
             }
         });
 
-
-
+        binding.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("favoriteMovieDetailsActivity","In Delete" );
+                viewModel.removeFavoriteMovie(movie.getImdbID());
+                Intent intent = new Intent(FavoriteMovieDetailsActivity.this, MainActivity.class );
+                startActivity(intent);
+            }
+        });
     }
 
 

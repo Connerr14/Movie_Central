@@ -2,6 +2,7 @@ package com.example.movie_central.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -53,8 +54,11 @@ public class FavoritesActivity extends AppCompatActivity implements ItemClickLis
 
         viewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
+        Log.d("Main", "In before observable");
+
         // Set up a observable to watch for when a new movie is added
         viewModel.getFavoriteMoviesLiveData().observe(this, favs -> {
+            movieAdapter.clearMovies();
             movieAdapter.updateMovies(favs);
         });
 
@@ -72,16 +76,31 @@ public class FavoritesActivity extends AppCompatActivity implements ItemClickLis
             }
         });
 
-
-
-
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        Log.d("OnResume", "In OnResume");
+        // Set up a observable to watch for when a new movie is added
+        viewModel.getFavoriteMoviesLiveData().observe(this, favs -> {
+            movieAdapter.clearMovies();
+            movieAdapter.updateMovies(favs);
+        });
+
+        // Get the users fav movies based on there id
+        viewModel.loadFavoriteMovies(user.getUid());
+    }
+
+
 
     @Override
     public void onClick(View V, int position) {
         Movie clickedMovie = movieAdapter.getMovies().get(position);
 
-        Intent intent = new Intent(FavoritesActivity.this, favoriteMovieDetailsActivity.class);
+        Intent intent = new Intent(FavoritesActivity.this, FavoriteMovieDetailsActivity.class);
         intent.putExtra("KEY_ONE", clickedMovie);
         startActivity(intent);
     }

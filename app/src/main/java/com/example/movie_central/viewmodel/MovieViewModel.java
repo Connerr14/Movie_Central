@@ -123,9 +123,7 @@ public class MovieViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
-            }
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 
         });
     }
@@ -255,13 +253,31 @@ public class MovieViewModel extends ViewModel {
         });
     }
 
-    public void removeFavoriteMovie(String userId, String imdbID) {
+    // A method to delete a fav movie from a user document
+    public void removeFavoriteMovie(String imdbID) {
+
+        Log.d("MovieViewModel", "In remove function");
+        String userId = FirebaseAuth.getInstance().getUid();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Get the user reference
         DocumentReference userRef = db.collection("users").document(userId);
 
-        userRef.update("favMovies", FieldValue.arrayRemove(imdbID))
-                .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Movie removed from favorites"))
-                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to remove movie", e));
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Get the fav movies map in the users document
+                Map<String, Object> favMap = (Map<String, Object>) documentSnapshot.get("favMovies");
+
+                // Check that the map is not null, and that it contains the key that we want to delete
+                if (favMap != null && favMap.containsKey(imdbID)) {
+                    // If it does, use the update method, firebase dot notation and firebase FieldValue to delete the movie instance from the map
+                    userRef.update("favMovies." + imdbID, FieldValue.delete());
+                }
+
+            }
+        }).addOnFailureListener(e -> Log.e("MovieViewModel", "Failed to access user document", e));
+
     }
 
     public void logUserIn(String email, String password, AuthCallBack callback) {

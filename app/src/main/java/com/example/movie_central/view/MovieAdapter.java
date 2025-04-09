@@ -81,7 +81,15 @@ public class MovieAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void updateMovies(List<Movie> newMovies) {
         Log.d("MovieAdapter", "Reset Live Data");
         items.clear();
+        for (int i =0; i<items.size(); i++) {
+            Log.d("updateMovies", String.valueOf(items.get(i)));
+        }
         items.addAll(newMovies);
+
+        for (int i =0; i<items.size(); i++) {
+            Log.d("updateMovies", String.valueOf(items.get(i)));
+        }
+
         notifyDataSetChanged();
     }
 
